@@ -1,0 +1,2 @@
+F:\Users\Brian\Documents\My Work\Projects\WinsockClientTest\WinsockClientTest\Debug\WinsockClientTest.exe
+F:\Users\Brian\Documents\My Work\Projects\WinsockClientTest\WinsockClientTest\Debug\WinsockClientTest.pdb
