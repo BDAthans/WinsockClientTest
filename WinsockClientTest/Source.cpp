@@ -15,6 +15,9 @@ int __cdecl main(int argc, char* argv[]) {
 	#define DEFAULT_PORT "27015"
 	#define DEFAULT_BUFLEN 512
 
+	//Default IP address or domain
+	const char* ipaddr = "127.0.0.1";
+
 	//Create a SOCKET object
 	SOCKET ConnectSocket = INVALID_SOCKET;
 
@@ -55,7 +58,9 @@ int __cdecl main(int argc, char* argv[]) {
 	int lookupResult;
 
 	if (argv[1] == NULL) {
-		const char* ipaddr = "127.0.0.1";
+
+		//const char* ipaddr = "127.0.0.1";
+		
 		lookupResult = getaddrinfo(ipaddr, DEFAULT_PORT, &hints, &result);
 	}
 	else
@@ -67,8 +72,6 @@ int __cdecl main(int argc, char* argv[]) {
 		pause();
 		return 1;
 	}
-
-
 
 	/*
 	Next call the socket function and return its value to the ConnectSocket variable.
@@ -88,6 +91,13 @@ int __cdecl main(int argc, char* argv[]) {
 		WSACleanup();
 		pause();
 		return 1;
+	}
+
+	// Set the exclusive address option to avoid malicious application binding to the same port
+	int optval = 1;
+	int setResult = setsockopt(ConnectSocket, SOL_SOCKET, SO_EXCLUSIVEADDRUSE, (char*)&optval, sizeof(optval));
+	if (setResult == SOCKET_ERROR) {
+		cout << "setsockopt for SO_EXCLUSIVEADDRUSE failed with error: " << WSAGetLastError() << "\n";
 	}
 
 	/*
@@ -170,7 +180,7 @@ int __cdecl main(int argc, char* argv[]) {
 	//Shutdown the send half of the connection since no more data will be sent
 	int shutdownSendResult = shutdown(ConnectSocket, SD_SEND);
 	if (shutdownSendResult == SOCKET_ERROR) {
-		cout << "ShutdownSend Failed: " << WSAGetLastError() << "\n";
+		cout << "Shutdown Send Failed: " << WSAGetLastError() << "\n";
 		closesocket(ConnectSocket);
 		WSACleanup();
 		pause();
